@@ -5,7 +5,7 @@
 <h1 align="center">NGINX by Example Vol 1 - Verified Configs & Tests</h1>
 
 <p align="center">
-  <a href="https://geekist.co/nginx-by-example">
+  <a href="https://geekmaster3.gumroad.com/l/nginx-by-example">
     📘 <strong>Buy the Book</strong>
   </a>
 </p>
