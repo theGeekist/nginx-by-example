@@ -5,8 +5,8 @@
 <h1 align="center">NGINX by Example Vol 1 - Verified Configs & Tests</h1>
 
 <p align="center">
-  <a href="https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/test.yml">
-    <img src="https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/test.yml/badge.svg?branch=main" alt="Build Status" />
+  <a href="https://github.com/theGeekist/nginx-by-example/actions/workflows/test.yml">
+    <img src="https://github.com/theGeekist/nginx-by-example/actions/workflows/test.yml/badge.svg?branch=main" alt="Build Status" />
   </a>
   &nbsp;
   <a href="https://geekist.co/nginx-by-example">
