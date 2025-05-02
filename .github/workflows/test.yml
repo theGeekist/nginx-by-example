@@ -1,0 +1,41 @@
+name: NGINX Test Suite
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:20.10.16-dind
+        options: --privileged
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🧰 Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: 🐳 Set up Docker Compose
+        run: |
+          docker compose up -d --build
+          sleep 10  # Give time for WordPress/MySQL init
+
+      - name: 🔍 Confirm container health
+        run: docker ps -a
+
+      - name: 📦 Install deps
+        run: bun install
+
+      - name: 🧪 Run tests
+        run: bun test
+
+      - name: 🧹 Teardown
+        if: always()
+        run: docker compose down -v

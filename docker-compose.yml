@@ -1,0 +1,48 @@
+services:
+  nginx:
+    container_name: nginx-by-example-nginx
+    build: ./docker
+    ports:
+      - "8181:80"
+      - "8443:443"
+    volumes:
+      - ./docker/conf.d:/etc/nginx/conf.d
+      - ./docker/sites-enabled:/etc/nginx/sites-enabled
+      - ./docker/ssl:/etc/nginx/ssl
+      - ./docker/ocsp:/etc/nginx/ocsp
+      - ./docker/srv:/etc/nginx/srv
+      - ./docker/cache:/var/cache/nginx
+      - nginx_cache:/var/cache/nginx
+    restart: unless-stopped
+    depends_on:
+      - wordpress
+
+  wordpress:
+    image: wordpress:php8.2-fpm
+    container_name: nginx-by-example-wp
+    restart: unless-stopped
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_NAME: wp
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: wp
+    expose:
+      - "9000"
+    volumes:
+      - wordpress_data:/var/www/html
+
+  mysql:
+    image: mysql:8
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: wp
+      MYSQL_USER: wp
+      MYSQL_PASSWORD: wp
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  nginx_cache:       # Used by NGINX FastCGI cache
+  wordpress_data:    # WordPress content
+  mysql_data:        # Database persistence

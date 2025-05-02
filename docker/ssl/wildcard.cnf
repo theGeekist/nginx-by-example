@@ -1,0 +1,18 @@
+[ req ]
+default_bits       = 2048
+default_md         = sha256
+distinguished_name = dn
+req_extensions     = req_ext
+prompt             = no
+
+[ dn ]
+CN = *.localhost
+
+[ req_ext ]
+subjectAltName = @alt_names
+authorityInfoAccess = OCSP;URI:http://127.0.0.1/ocsp
+
+[ alt_names ]
+DNS.1 = localhost
+DNS.2 = freebies.localhost
+DNS.3 = test.localhost

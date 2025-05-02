@@ -1,0 +1,111 @@
+directories:
+  docker:
+    nginx.conf: |
+      # Master NGINX config
+      # Includes conf.d/*.conf for defaults
+      # Then sites-enabled/* for site-specific routing
+      user  nginx;
+      worker_processes auto;
+
+      error_log /var/log/nginx/error.log warn;
+      pid /var/run/nginx.pid;
+
+      events {
+          worker_connections 1024;
+      }
+
+      http {
+          include /etc/nginx/mime.types;
+          default_type application/octet-stream;
+
+          include /etc/nginx/conf.d/*.conf;
+          include /etc/nginx/sites-enabled/*;
+
+          sendfile on;
+          keepalive_timeout 65;
+      }
+    Dockerfile: |
+      FROM nginx:1.27-alpine
+
+      RUN mkdir -p /etc/nginx/conf.d \
+          && mkdir -p /etc/nginx/sites-available \
+          && mkdir -p /etc/nginx/sites-enabled \
+          && mkdir -p /etc/nginx/snippets \
+          && mkdir -p /etc/nginx/ssl
+
+      COPY ./nginx.conf /etc/nginx/nginx.conf
+  docker/conf.d:
+    http-overwrite.conf: |
+      # Optional: Redirect HTTP to HTTPS
+      server {
+        listen 80 default_server;
+        return 301 https://$host$request_uri;
+      }
+  docker/sites-enabled: {}
+  docker/ssl: {}
+  sections:
+    01-ocsp-stapling:
+      section-slug.conf: |
+        # OCSP stapling example config
+        server {
+          listen 443 ssl;
+          server_name localhost;
+
+          ssl_certificate /etc/nginx/ssl/server.crt;
+          ssl_certificate_key /etc/nginx/ssl/server.key;
+          ssl_stapling on;
+          ssl_stapling_verify on;
+          ssl_trusted_certificate /etc/nginx/ssl/ca.crt;
+
+          location / {
+            return 200 "OCSP is stapled.\n";
+          }
+        }
+      test.ts: |
+        // Bun test to check OCSP stapling headers
+    02-subdomain-routing:
+      section-slug.conf: |
+        # Wildcard subdomain routing example
+        server {
+          listen 80;
+          server_name ~^(?<subdomain>.+)\.localhost$;
+
+          location / {
+            return 200 "Tenant: $subdomain\n";
+          }
+        }
+      test.ts: |
+        // Bun test to hit foo.localhost:8080 and assert $subdomain
+  utils:
+    env.ts: |
+      // Test env util: symlinks section conf, reloads nginx, handles certs
+  docker-compose.yml: |
+    version: "3.9"
+    services:
+      nginx:
+        build: ./docker
+        ports:
+          - "8080:80"
+          - "8443:443"
+        volumes:
+          - ./docker/conf.d:/etc/nginx/conf.d
+          - ./docker/sites-enabled:/etc/nginx/sites-enabled
+          - ./docker/ssl:/etc/nginx/ssl
+        restart: unless-stopped
+  README.md: |
+    # NGINX by Example Vol. 1 Companion Code
+
+    This repo contains runnable tests and live NGINX configs for every section in **NGINX by Example Vol. 1**.
+
+    ## Requirements
+    - Docker
+    - Bun
+
+    ## Running
+
+    ```bash
+    docker compose up -d
+    bun test
+    ```
+
+    Each folder in `sections/` mirrors the structure of the book.
