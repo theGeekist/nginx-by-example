@@ -18,8 +18,9 @@
 ## Quick Start
 
 > **Requirements**
-> - [Bun](https://bun.sh/) installed globally
-> - Docker + Docker Compose
+> [Bun](https://bun.sh/) installed globally
+> Docker + Docker Compose
+>   
 
 ### 1. Start the Docker environment
 
