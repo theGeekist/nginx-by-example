@@ -33,12 +33,7 @@ jobs:
         run: sudo chown -R $USER:$USER .
 
       - name: Add test domains to /etc/hosts
-        run: echo "127.0.0.1 test.localhost freebies.localhost" | sudo tee -a /etc/hosts
-      - name: 🧪 Verify hosts file mapping
-        run: |
-          cat /etc/hosts | grep localhost
-          ping -c 1 test.localhost
-          ping -c 1 freebies.localhost
+        run: echo "127.0.0.1 test.local freebies.local" | sudo tee -a /etc/hosts
       - name: Set up Docker
         run: |
           docker compose -f docker-compose.yml up -d
@@ -58,8 +53,8 @@ jobs:
 
           echo ""
           echo "🌐 Checking subdomain resolution from the GitHub runner:"
-          curl -s -I https://test.localhost:8443 || echo "❌ test.localhost failed"
-          curl -s -I https://freebies.localhost:8443 || echo "❌ freebies.localhost failed"
+          curl -s -I https://test.local:8443 || echo "❌ test.local failed"
+          curl -s -I https://freebies.local:8443 || echo "❌ freebies.local failed"
 
           echo ""
           echo "📦 List active Docker containers:"

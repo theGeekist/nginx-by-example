@@ -12,7 +12,7 @@ test("Blue-Green traffic split approximation", () => {
 
   for (let i = 0; i < ITERATIONS; i++) {
     const result = spawnCurl({
-      hostname: "test.localhost",
+      hostname: "test.local",
       path: "/",
       port: 8443,
       protocol: "https",

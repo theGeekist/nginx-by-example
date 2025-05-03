@@ -11,7 +11,7 @@ beforeAll(() => {
 
 test("Serves AVIF when accepted", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/images/logo.png",
     protocol: "https",
     port: 8443,
@@ -27,7 +27,7 @@ test("Serves AVIF when accepted", () => {
 
 test("Serves WebP when AVIF not accepted", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/images/logo.png",
     protocol: "https",
     port: 8443,
@@ -43,7 +43,7 @@ test("Serves WebP when AVIF not accepted", () => {
 
 test("Serves original when no Accept header", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/images/logo.png",
     protocol: "https",
     port: 8443,

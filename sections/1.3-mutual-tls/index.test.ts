@@ -22,7 +22,7 @@ beforeAll(() => {
 
 test("mTLS fails without client cert", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     port: 8443,
     protocol: "https", // original test used HTTP not HTTPS
     discardBody: true,
@@ -35,7 +35,7 @@ test("mTLS fails without client cert", () => {
 
 test("mTLS succeeds with client cert", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     port: 8443,
     protocol: "https", // original test used HTTP not HTTPS
     verbose: true,

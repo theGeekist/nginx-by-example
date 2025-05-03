@@ -8,7 +8,7 @@ beforeAll(() => {
 
 test("Rejects request with no token", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/api/",
     port: 8443,
     protocol: "https",
@@ -22,7 +22,7 @@ test("Rejects request with no token", () => {
 
 test("Allows request with valid token", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/api/",
     port: 8443,
     protocol: "https",
@@ -36,7 +36,7 @@ test("Allows request with valid token", () => {
 
 test("Rejects request with invalid token", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/api/",
     port: 8443,
     protocol: "https",
@@ -54,7 +54,7 @@ test("Applies rate limiting per tenant", async () => {
 
   for (let i = 0; i < 30; i++) {
     const result = spawnCurl({
-      hostname: "test.localhost",
+      hostname: "test.local",
       path: "/api/",
       port: 8443,
       protocol: "https",

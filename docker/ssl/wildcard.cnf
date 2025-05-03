@@ -14,5 +14,5 @@ authorityInfoAccess = OCSP;URI:http://127.0.0.1/ocsp
 
 [ alt_names ]
 DNS.1 = localhost
-DNS.2 = freebies.localhost
-DNS.3 = test.localhost
+DNS.2 = freebies.local
+DNS.3 = test.local

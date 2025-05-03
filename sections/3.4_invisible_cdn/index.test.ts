@@ -10,7 +10,7 @@ beforeAll(() => {
 
 test("X-Accel-Redirect serves internal image", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/avatar",
     protocol: "https",
     port: 8443,
@@ -26,7 +26,7 @@ test("X-Accel-Redirect serves internal image", () => {
 
 test("Internal location is not directly accessible", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/images/",
     protocol: "https",
     port: 8443,

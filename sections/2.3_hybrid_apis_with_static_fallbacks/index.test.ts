@@ -8,7 +8,7 @@ beforeAll(() => {
 
 test("Returns static JSON if API fails", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/api/stats",
     protocol: "https",
     silent: true
@@ -21,7 +21,7 @@ test("Returns static JSON if API fails", () => {
 
 test("Returns upstream JSON if API succeeds", () => {
   const result = spawnCurl({
-    hostname: "freebies.localhost",
+    hostname: "freebies.local",
     path: "/api/stats",
     port: 8443,
     protocol: "https",

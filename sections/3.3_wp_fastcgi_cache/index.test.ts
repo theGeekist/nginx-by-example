@@ -18,7 +18,7 @@ test("First request should MISS the cache", () => {
 
   for (let i = 0; i < 5; i++) {
     const result = spawnCurl({
-      hostname: "test.localhost",
+      hostname: "test.local",
       path: testUrl,
       protocol: "https",
       port: 8443,
@@ -43,7 +43,7 @@ test("Second request should HIT the cache", () => {
 
   for (let i = 0; i < 5; i++) {
     const result = spawnCurl({
-      hostname: "test.localhost",
+      hostname: "test.local",
       path: testUrl,
       protocol: "https",
       port: 8443,

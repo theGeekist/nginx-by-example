@@ -65,7 +65,7 @@ export const curlApi = (path: string, flags:string[] = []) => {
   const result = spawnSync({
     cmd: [
       "curl", ...flags,
-      `https://test.localhost:8443${path}`,
+      `https://test.local:8443${path}`,
       "--cacert", getCertPath("ca.crt")
     ],
     stdout: "pipe",
@@ -105,14 +105,13 @@ export function spawnCurl(opts: CurlOptions) {
     extraCommands = [],
   } = opts;
 
-  // Prefer `hostname`, fallback to `subdomain.localhost`, fallback to `localhost`
   const url = `${protocol}://${hostname}:${port}${path}`;
 
   const cmd = ["curl"];
-  cmd.push("--resolve", `test.localhost:8181:127.0.0.1`);
-  cmd.push("--resolve", `test.localhost:8443:127.0.0.1`);
-  cmd.push("--resolve", `freebies.localhost:8181:127.0.0.1`);
-  cmd.push("--resolve", `freebies.localhost:8443:127.0.0.1`);
+  cmd.push("--resolve", `test.local:8181:127.0.0.1`);
+  cmd.push("--resolve", `test.local:8443:127.0.0.1`);
+  cmd.push("--resolve", `freebies.local:8181:127.0.0.1`);
+  cmd.push("--resolve", `freebies.local:8443:127.0.0.1`);
 
   if (verbose) cmd.push("-v");
   if (followRedirect) cmd.push("-L");

@@ -16,7 +16,7 @@ test("Dynamic subdomain routing", () => {
   const domains = ["test", "freebies"];
   for (const sub of domains) {
     const result = spawnCurl({
-      hostname: `${sub}.localhost`,
+      hostname: `${sub}.local`,
       port: 8443,
       protocol: "https", // original test used HTTP not HTTPS
       followRedirect: true,

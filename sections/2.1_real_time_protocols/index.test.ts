@@ -29,7 +29,7 @@ beforeAll(async () => {
 
 test("WebSocket upgrade (fetch) fails as expected", async () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     port: 8443,
     protocol: "https",
     headers: [
@@ -59,7 +59,7 @@ test("WS server echoes standalone", async () => {
 
 test("SSE emits events and reaches client", async () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/events/",
     port: 8443,
     protocol: "https",
@@ -76,7 +76,7 @@ test("Long polling endpoint waits and responds", async () => {
   const start = Date.now();
 
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/poll/",
     port: 8443,
     protocol: "https",

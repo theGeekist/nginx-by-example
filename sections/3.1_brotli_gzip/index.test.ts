@@ -8,7 +8,7 @@ beforeAll(() => {
 
 test("Serves Brotli when requested", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/compressed.html",
     protocol: "https",
     port: 8443,
@@ -24,7 +24,7 @@ test("Serves Brotli when requested", () => {
 
 test("Serves Gzip when Brotli not accepted", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/compressed.html",
     protocol: "https",
     port: 8443,
@@ -40,7 +40,7 @@ test("Serves Gzip when Brotli not accepted", () => {
 
 test("Falls back to original when no encoding is accepted", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     path: "/compressed.html",
     protocol: "https",
     port: 8443,

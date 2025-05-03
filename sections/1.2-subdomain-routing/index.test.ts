@@ -31,9 +31,9 @@ test("OCSP responder bypasses redirect", () => {
   expect(status).toBe("200");
 });
 
-test("HTTPS freebies.localhost responds correctly", () => {
+test("HTTPS freebies.local responds correctly", () => {
   const result = spawnCurl({
-    hostname: "freebies.localhost",
+    hostname: "freebies.local",
     port: 8181,
     protocol: "http", // original test used HTTP not HTTPS
     followRedirect: true,
@@ -41,12 +41,12 @@ test("HTTPS freebies.localhost responds correctly", () => {
   });
 
   const stdout = result.stdout.toString();
-  expect(stdout.includes("freebies.localhost")).toBe(true);
+  expect(stdout.includes("freebies.local")).toBe(true);
 });
 
-test("HTTPS test.localhost responds correctly", () => {
+test("HTTPS test.local responds correctly", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     port: 8181,
     protocol: "http", // original test used HTTP not HTTPS
     followRedirect: true,
@@ -54,7 +54,7 @@ test("HTTPS test.localhost responds correctly", () => {
   });
 
   const stdout = result.stdout.toString();
-  expect(stdout.includes("test.localhost")).toBe(true);
+  expect(stdout.includes("test.local")).toBe(true);
 });
 
 afterAll(() => {

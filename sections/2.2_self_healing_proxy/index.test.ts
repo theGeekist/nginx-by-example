@@ -9,7 +9,7 @@ beforeAll(() => {
 
 test("Cluster 1: Normal response from primary", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     protocol: "https",
     path: "/always-success/",
     silent: true
@@ -20,7 +20,7 @@ test("Cluster 1: Normal response from primary", () => {
 
 test("Cluster 2: Primary fails, fallback to 2nd node (503)", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     protocol: "https",
     path: "/fallback-error/",
     silent: true
@@ -31,7 +31,7 @@ test("Cluster 2: Primary fails, fallback to 2nd node (503)", () => {
 
 test("Cluster 3: Primary + secondary fail, fallback to backup", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     protocol: "https",
     path: "/force-backup/",
     silent: true
@@ -42,7 +42,7 @@ test("Cluster 3: Primary + secondary fail, fallback to backup", () => {
 
 test("Cluster 4: No retry, returns 503 from primary", () => {
   const result = spawnCurl({
-    hostname: "test.localhost",
+    hostname: "test.local",
     protocol: "https",
     path: "/no-retry/",
     silent: true
