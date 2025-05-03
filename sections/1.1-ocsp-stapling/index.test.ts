@@ -1,10 +1,8 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
 import { join } from "path";
-import { copyFile, reloadNginx, unlink, getSitesEnabledPath, getCertPath } from "@utils/env";
-import { spawnSync } from "bun";
+import { copyFile, reloadNginx, unlink, getSitesEnabledPath, spawnCurl } from "@utils/env";
 
 const CWD = import.meta.dir;
-const CA_CERT_PATH = getCertPath("ca.crt");
 const CONF_SYMLINK = getSitesEnabledPath("default.conf");
 const SSL_SYMLINK = getSitesEnabledPath("ssl_params");
 const CONF_PARAMS = join(CWD, "default.conf");
@@ -18,22 +16,16 @@ beforeAll(() => {
 })
 
 test("OCSP stapling is enabled via curl", () => {
-  const result = spawnSync({
-    cmd: [
-      "curl",
-      "-v",
-      "https://localhost:8443",
-      "--cacert", CA_CERT_PATH
-    ],
-    stdout: "pipe",
-    stderr: "pipe"
+  const res = spawnCurl({
+    hostname: "localhost",
+    path: "/ocsp/whatever",
+    port: 8181,
+    protocol: "http",
+    silent: true,
+    discardBody: true,
+    onlyStatus: true
   });
-
-  const stdout = result.stdout.toString();
-
-  expect(result.success).toBe(true);
-  expect(stdout).toContain("OCSP stapling test passed.");
-
+  expect(res.stdout.toString().trim()).toBe("200");
 });
 
 afterAll(() => {

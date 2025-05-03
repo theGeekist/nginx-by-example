@@ -1,5 +1,7 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
 import { WebSocket } from "ws";
+import { setTimeout } from "timers/promises";
+
 
 import { startWs, stopWs } from "@sections/2.1_real_time_protocols/ws";
 import { startSSE, stopSSE } from "@sections/2.1_real_time_protocols/sse";
@@ -9,26 +11,37 @@ import {
   curlApi,
   setupTestConfig,
   teardownTestConfig,
+  spawnCurl,
 } from "@utils/env";
 
-beforeAll(() => {
-  startWs();
-  startSSE();
-  startPoll();
-  setupTestConfig(import.meta.dir)
+beforeAll(async () => {
+  startWs();     // Starts mock WebSocket server
+  startSSE();    // Starts mock Server-Sent Events server
+  startPoll();   // Starts long-polling mock server
+
+  setupTestConfig(import.meta.dir);
   reloadNginx();
+
+  // Wait a few seconds to ensure all servers and nginx are ready
+  await setTimeout(1e3); // 2 seconds should be safe, adjust if needed
 });
 
-test("WebSocket upgrade (fetch) fails as expected", async () => {
-  const result = await fetch("https://test.localhost:8443/ws", {
-    method: "GET",
-    headers: {
-      Connection: "Upgrade",
-      Upgrade: "websocket",
-    },
-  }).catch((err) => err);
 
-  expect(result instanceof Error).toBe(true);
+test("WebSocket upgrade (fetch) fails as expected", async () => {
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    port: 8443,
+    protocol: "https",
+    headers: [
+      "Connection: Upgrade",
+      "Upgrade: websocket"
+    ],
+    verbose: true,
+    extraCommands: ["--http1.1"]
+  });
+
+  const status = result.stdout.toString().trim();
+  expect(status).toContain("404");
 });
 
 test("WS server echoes standalone", async () => {
@@ -45,16 +58,36 @@ test("WS server echoes standalone", async () => {
 });
 
 test("SSE emits events and reaches client", async () => {
-  const output = curlApi("/events/", ["--no-buffer"])
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    path: "/events/",
+    port: 8443,
+    protocol: "https",
+    headers: ["Accept: text/event-stream"],
+    extraCommands: ["--no-buffer"], // matches legacy curlApi call
+    silent: true
+  });
+
+  const output = result.stdout.toString();
   expect(output.includes("message")).toBe(true);
 });
 
 test("Long polling endpoint waits and responds", async () => {
   const start = Date.now();
-  const stdout = curlApi("/poll/", ["-s"])
+
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    path: "/poll/",
+    port: 8443,
+    protocol: "https",
+    silent: true
+  });
+
   const elapsed = Date.now() - start;
+  const stdout = result.stdout.toString();
+
   expect(stdout.includes("poll: update ready")).toBe(true);
-  expect(elapsed).toBeGreaterThanOrEqual(1900); // account for timing slop
+  expect(elapsed).toBeGreaterThanOrEqual(1900); // allow 100ms buffer slop
 });
 
 afterAll(async () => {

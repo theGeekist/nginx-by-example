@@ -1,6 +1,6 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
 import {
-  curlApi, reloadNginx, setupTestConfig, teardownTestConfig
+  curlApi, reloadNginx, setupTestConfig, spawnCurl, teardownTestConfig
 } from "@utils/env";
 
 beforeAll(() => {
@@ -9,22 +9,36 @@ beforeAll(() => {
 });
 
 test("X-Accel-Redirect serves internal image", () => {
-  const result = curlApi("/avatar", [
-    "-s", "-D", "-", "-o", "/dev/null"
-  ]);
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    path: "/avatar",
+    protocol: "https",
+    port: 8443,
+    silent: true,
+    discardBody: true,
+    extraCommands: ["-D", "-"]
+  });
 
-  expect(result).toMatch(/200 OK/);
-  
-  expect(result).toMatch(/X-Accel-Redirect: \/images\/logo.png/);
+  const output = result.stdout.toString().trim();
+  expect(output).toMatch(/200 OK/);
+  expect(output).toMatch(/X-Accel-Redirect: \/images\/logo.png/);
 });
 
 test("Internal location is not directly accessible", () => {
-  const result = curlApi("/images/", [
-    "-s", "-D", "-", "-o", "/dev/null"
-  ]);
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    path: "/images/",
+    protocol: "https",
+    port: 8443,
+    silent: true,
+    discardBody: true,
+    extraCommands: ["-D", "-"]
+  });
 
-  expect(result).toMatch(/404/); // Because of "internal;"
+  const output = result.stdout.toString().trim();
+  expect(output).toMatch(/404/); // Because of "internal;"
 });
+
 
 afterAll(() => {
   teardownTestConfig();

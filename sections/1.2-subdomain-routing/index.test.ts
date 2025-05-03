@@ -1,6 +1,6 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
 import { join } from "path";
-import { copyFile, reloadNginx, unlink, getSitesEnabledPath, getCertPath, getConfDPath } from "@utils/env";
+import { copyFile, reloadNginx, unlink, getSitesEnabledPath, getCertPath, getConfDPath, spawnCurl } from "@utils/env";
 import { spawnSync } from "bun";
 
 const CWD = import.meta.dir;
@@ -17,14 +17,14 @@ beforeAll(() => {
 });
 
 test("OCSP responder bypasses redirect", () => {
-  const result = spawnSync({
-    cmd: [
-      "curl",
-      "-s", // silent (no progress)
-      "-o", "/dev/null", // discard body
-      "-w", "%{http_code}", // only return status code
-      "http://localhost:8181/ocsp/whatever"
-    ]
+  const result = spawnCurl({
+    hostname: "localhost",
+    path: "/ocsp/whatever",
+    port: 8181,
+    protocol: "http",
+    silent: true,
+    discardBody: true,
+    onlyStatus: true
   });
 
   const status = result.stdout.toString().trim();
@@ -32,16 +32,12 @@ test("OCSP responder bypasses redirect", () => {
 });
 
 test("HTTPS freebies.localhost responds correctly", () => {
-  const result = spawnSync({
-    cmd: [
-      "curl",
-      "-v",
-      "-L",
-      "http://freebies.localhost:8181",
-      "--cacert", CA_CERT_PATH
-    ],
-    stdout: "pipe",
-    stderr: "pipe"
+  const result = spawnCurl({
+    hostname: "freebies.localhost",
+    port: 8181,
+    protocol: "http", // original test used HTTP not HTTPS
+    followRedirect: true,
+    verbose: true
   });
 
   const stdout = result.stdout.toString();
@@ -49,15 +45,12 @@ test("HTTPS freebies.localhost responds correctly", () => {
 });
 
 test("HTTPS test.localhost responds correctly", () => {
-  const result = spawnSync({
-    cmd: [
-      "curl",
-      "-L",
-      "http://test.localhost:8181",
-      "--cacert", CA_CERT_PATH
-    ],
-    stdout: "pipe",
-    stderr: "pipe"
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    port: 8181,
+    protocol: "http", // original test used HTTP not HTTPS
+    followRedirect: true,
+    verbose: true
   });
 
   const stdout = result.stdout.toString();

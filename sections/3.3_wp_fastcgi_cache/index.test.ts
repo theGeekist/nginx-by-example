@@ -1,6 +1,6 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
 import {
-  curlApi, reloadNginx, setupTestConfig, teardownTestConfig
+  curlApi, reloadNginx, setupTestConfig, spawnCurl, teardownTestConfig
 } from "@utils/env";
 
 let testUrl: string;
@@ -13,23 +13,53 @@ beforeAll(() => {
 
 test("First request should MISS the cache", () => {
   let res = "";
+  const buf = new SharedArrayBuffer(4);
+  const wait = () => Atomics.wait(new Int32Array(buf), 0, 0, 250); // 250ms sleep
+
   for (let i = 0; i < 5; i++) {
-    res = curlApi(testUrl, ["-s", "-D", "-", "-o", "/dev/null"]);
+    const result = spawnCurl({
+      hostname: "test.localhost",
+      path: testUrl,
+      protocol: "https",
+      port: 8443,
+      silent: true,
+      discardBody: true,
+      extraCommands: ["-D", "-"]
+    });
+
+    res = result.stdout.toString().trim();
     if (!res.includes("404 Not Found")) break;
-    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250); // sleep 250ms
+    wait();
   }
+
   expect(res).toMatch(/X-Cache: (MISS|BYPASS)/);
 });
 
+
 test("Second request should HIT the cache", () => {
   let res2 = "";
+  const buf = new SharedArrayBuffer(4);
+  const wait = () => Atomics.wait(new Int32Array(buf), 0, 0, 250);
+
   for (let i = 0; i < 5; i++) {
-    res2 = curlApi(testUrl, ["-s", "-D", "-", "-o", "/dev/null"]);
+    const result = spawnCurl({
+      hostname: "test.localhost",
+      path: testUrl,
+      protocol: "https",
+      port: 8443,
+      silent: true,
+      discardBody: true,
+      extraCommands: ["-D", "-"]
+    });
+
+    res2 = result.stdout.toString().trim();
     if (!res2.includes("404 Not Found")) break;
-    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250);
+    wait();
   }
+
   expect(res2).toMatch(/X-Cache: HIT/);
 });
+
 
 afterAll(() => {
   teardownTestConfig();

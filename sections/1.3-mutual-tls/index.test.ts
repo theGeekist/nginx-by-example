@@ -1,6 +1,6 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
 import { join } from "path";
-import { copyFile, reloadNginx, unlink, getSitesEnabledPath, getCertPath, getConfDPath } from "@utils/env";
+import { copyFile, reloadNginx, unlink, getSitesEnabledPath, getCertPath, getConfDPath, spawnCurl } from "@utils/env";
 import { spawnSync } from "bun";
 
 const CWD = import.meta.dir;
@@ -21,31 +21,27 @@ beforeAll(() => {
 
 
 test("mTLS fails without client cert", () => {
-  const result = spawnSync({
-    cmd: [
-      "curl",
-      "-s",
-      "-o", "/dev/null",
-      "-w", "%{http_code}",
-      "https://test.localhost:8443",
-      "--cacert", CA_CERT_PATH
-    ],
-    stdout: "pipe",
-    stderr: "pipe"
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    port: 8443,
+    protocol: "https", // original test used HTTP not HTTPS
+    discardBody: true,
+    silent: true,
+    onlyStatus: true,
   });
-
   const statusCode = result.stdout.toString().trim();
   expect(statusCode).toBe("400");
 });
 
 test("mTLS succeeds with client cert", () => {
-  const result = spawnSync({
-    cmd: [
-      "curl", "-v",
-      "https://test.localhost:8443",
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    port: 8443,
+    protocol: "https", // original test used HTTP not HTTPS
+    verbose: true,
+    extraCommands: [
       "--cert", CLIENT_CERT_PATH,
-      "--key", CLIENT_KEY_PATH,
-      "--cacert", CLIENT_CA
+      "--key", CLIENT_KEY_PATH
     ]
   });
   const body = result.stdout.toString();

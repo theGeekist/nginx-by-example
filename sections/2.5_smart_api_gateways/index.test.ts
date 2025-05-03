@@ -1,7 +1,5 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
-import {
-  curlApi, reloadNginx, setupTestConfig, teardownTestConfig
-} from "@utils/env";
+import { reloadNginx, setupTestConfig, spawnCurl, teardownTestConfig } from "@utils/env";
 
 beforeAll(() => {
   setupTestConfig(import.meta.dir);
@@ -9,21 +7,44 @@ beforeAll(() => {
 });
 
 test("Rejects request with no token", () => {
-  const body = curlApi("/api/", ["-s", "-w", "%{http_code}"]);
-  expect(body.endsWith("403")).toBe(true);
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    path: "/api/",
+    port: 8443,
+    protocol: "https",
+    silent: true,
+    onlyStatus: true
+  });
+
+  const status = result.stdout.toString().trim();
+  expect(status).toContain("403");
 });
 
 test("Allows request with valid token", () => {
-  const body = curlApi("/api/", [
-    "-s", "-H", "Authorization: Bearer tenant123"
-  ]);
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    path: "/api/",
+    port: 8443,
+    protocol: "https",
+    silent: true,
+    headers: ["Authorization: Bearer tenant123"]
+  });
+
+  const body = result.stdout.toString();
   expect(body).toContain("API Response for tenant: tenant123");
 });
 
 test("Rejects request with invalid token", () => {
-  const body = curlApi("/api/", [
-    "-s", "-H", "Authorization: Bearer wrong"
-  ]);
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    path: "/api/",
+    port: 8443,
+    protocol: "https",
+    silent: true,
+    headers: ["Authorization: Bearer wrong"]
+  });
+
+  const body = result.stdout.toString();
   expect(body).not.toContain("API Response");
 });
 
@@ -32,13 +53,22 @@ test("Applies rate limiting per tenant", async () => {
   let limitedCount = 0;
 
   for (let i = 0; i < 30; i++) {
-    const body = curlApi("/api/", [
-      "-s", "-w", "%{http_code}",
-      "-H", "Authorization: Bearer tenant123"
-    ]);
+    const result = spawnCurl({
+      hostname: "test.localhost",
+      path: "/api/",
+      port: 8443,
+      protocol: "https",
+      silent: true,
+      headers: ["Authorization: Bearer tenant123"],
+      extraCommands: ["-w", "%{http_code}"] // add status code after body
+    });
 
-    if (body.endsWith("200")) successCount++;
-    if (body.endsWith("503")) limitedCount++;
+    const output = result.stdout.toString().trim();
+    const statusCode = output.slice(-3); // last 3 chars
+
+    if (statusCode === "200") successCount++;
+    if (statusCode === "503") limitedCount++;
+
     await Bun.sleep(100);
   }
 

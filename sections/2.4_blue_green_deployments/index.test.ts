@@ -1,7 +1,5 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
-import {
-  curlApi, reloadNginx, setupTestConfig, teardownTestConfig
-} from "@utils/env";
+import { reloadNginx, setupTestConfig, spawnCurl, teardownTestConfig } from "@utils/env";
 
 beforeAll(() => {
   setupTestConfig(import.meta.dir)
@@ -13,7 +11,15 @@ test("Blue-Green traffic split approximation", () => {
   let blue = 0, green = 0;
 
   for (let i = 0; i < ITERATIONS; i++) {
-    const body = curlApi("/", ["-s"]);
+    const result = spawnCurl({
+      hostname: "test.localhost",
+      path: "/",
+      port: 8443,
+      protocol: "https",
+      silent: true
+    });
+
+    const body = result.stdout.toString();
     if (body.includes("BLUE")) blue++;
     if (body.includes("GREEN")) green++;
   }

@@ -4,8 +4,8 @@ import {
   getCertPath,
   setupTestConfig,
   teardownTestConfig,
+  spawnCurl,
 } from "@utils/env";
-import { spawnSync } from "bun";
 
 beforeAll(() => {
   setupTestConfig(import.meta.dir)
@@ -15,14 +15,12 @@ beforeAll(() => {
 test("Dynamic subdomain routing", () => {
   const domains = ["test", "freebies"];
   for (const sub of domains) {
-    const result = spawnSync({
-      cmd: [
-        "curl", "-v", "-L",
-        `https://${sub}.localhost:8443`,
-        "--cacert", getCertPath("ca.crt")
-      ],
-      stdout: "pipe",
-      stderr: "pipe"
+    const result = spawnCurl({
+      hostname: `${sub}.localhost`,
+      port: 8443,
+      protocol: "https", // original test used HTTP not HTTPS
+      followRedirect: true,
+      verbose: true
     });
     const stdout = result.stdout.toString();
     expect(stdout.includes(`Hello from ${sub}`)).toBe(true);

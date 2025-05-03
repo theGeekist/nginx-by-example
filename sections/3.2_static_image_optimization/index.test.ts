@@ -1,6 +1,6 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
 import {
-  curlApi, getCertPath, reloadNginx, setupTestConfig, teardownTestConfig
+  curlApi, getCertPath, reloadNginx, setupTestConfig, spawnCurl, teardownTestConfig
 } from "@utils/env";
 import { spawnSync } from "bun";
 
@@ -10,54 +10,53 @@ beforeAll(() => {
 });
 
 test("Serves AVIF when accepted", () => {
-
-  const result = spawnSync({
-    cmd: [
-      "curl", "-s", "-D", "-", "-o", "/dev/null",
-      "-H", "Accept: image/avif",
-      `https://localhost:8443/images/logo.png`,
-      "--cacert", getCertPath("ca.crt")
-    ],
-    stdout: "pipe",
-    stderr: "pipe"
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    path: "/images/logo.png",
+    protocol: "https",
+    port: 8443,
+    silent: true,
+    discardBody: true,
+    extraCommands: ["-D", "-"],
+    headers: ["Accept: image/avif"]
   });
 
-  const res = result.stdout.toString().trim();  
+  const res = result.stdout.toString().trim();
   expect(res).toContain("image/avif");
 });
 
 test("Serves WebP when AVIF not accepted", () => {
-  const result = spawnSync({
-    cmd: [
-      "curl", "-s", "-D", "-", "-o", "/dev/null",
-      "-H", "Accept: image/webp",
-      `https://localhost:8443/images/logo.png`,
-      "--cacert", getCertPath("ca.crt")
-    ],
-    stdout: "pipe",
-    stderr: "pipe"
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    path: "/images/logo.png",
+    protocol: "https",
+    port: 8443,
+    silent: true,
+    discardBody: true,
+    extraCommands: ["-D", "-"],
+    headers: ["Accept: image/webp"]
   });
 
-  const res = result.stdout.toString().trim();  
+  const res = result.stdout.toString().trim();
   expect(res).toContain("image/webp");
-
 });
 
 test("Serves original when no Accept header", () => {
-  const result = spawnSync({
-    cmd: [
-      "curl", "-s", "-D", "-", "-o", "/dev/null",
-      "-H", "Accept: image/png",
-      `https://localhost:8443/images/logo.png`,
-      "--cacert", getCertPath("ca.crt")
-    ],
-    stdout: "pipe",
-    stderr: "pipe"
+  const result = spawnCurl({
+    hostname: "test.localhost",
+    path: "/images/logo.png",
+    protocol: "https",
+    port: 8443,
+    silent: true,
+    discardBody: true,
+    extraCommands: ["-D", "-"],
+    headers: ["Accept: image/png"]
   });
 
-  const res = result.stdout.toString().trim();  
+  const res = result.stdout.toString().trim();
   expect(res).toContain("image/png");
 });
+
 
 afterAll(() => {
   teardownTestConfig();

@@ -75,3 +75,58 @@ export const curlApi = (path: string, flags:string[] = []) => {
   return result.stdout.toString().trim();
 };
 
+interface CurlOptions {
+  subdomain?: string;        // Optional subdomain, e.g. "freebies"
+  hostname?: string;         // Full hostname override, e.g. "localhost" or "my.site"
+  path?: string;             // Path after domain, default "/"
+  port?: number;             // Port number, default 8443
+  protocol?: "http" | "https"; // Default "https"
+  resolve?: boolean;         // Inject --resolve for GitHub/CI contexts
+  verbose?: boolean;         // -v
+  followRedirect?: boolean;  // -L
+  headers?: string[];        // Custom headers
+  silent?: boolean;          // -s
+  discardBody?: boolean;     // -o /dev/null
+  onlyStatus?: boolean;      // -w %{http_code}
+  extraCommands?: string[];
+}
+
+export function spawnCurl(opts: CurlOptions) {
+  const {
+    hostname,
+    path = "/",
+    port = 8443,
+    protocol = "https",
+    verbose = false,
+    followRedirect = false,
+    headers = [],
+    silent = false,
+    discardBody = false,
+    onlyStatus = false,
+    extraCommands = [],
+  } = opts;
+
+  // Prefer `hostname`, fallback to `subdomain.localhost`, fallback to `localhost`
+  const url = `${protocol}://${hostname}:${port}${path}`;
+
+  const cmd = ["curl"];
+  cmd.push("--resolve", `${hostname}:${port}:127.0.0.1`);
+
+  if (verbose) cmd.push("-v");
+  if (followRedirect) cmd.push("-L");
+  if (silent) cmd.push("-s");
+  if (discardBody) cmd.push("-o", "/dev/null");
+  if (onlyStatus) cmd.push("-w", "%{http_code}");
+  cmd.push("--cacert", getCertPath("ca.crt"));
+  for(const c of extraCommands) {
+    cmd.push(c);
+  }
+
+  for (const h of headers) {
+    cmd.push("-H", h);
+  }
+
+  cmd.push(url);
+
+  return spawnSync({ cmd, stdout: "pipe", stderr: "pipe" });
+}
