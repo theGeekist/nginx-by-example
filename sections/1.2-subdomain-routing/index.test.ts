@@ -1,7 +1,6 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
 import { join } from "path";
 import { copyFile, reloadNginx, unlink, getSitesEnabledPath, getCertPath, getConfDPath, spawnCurl } from "@utils/env";
-import { spawnSync } from "bun";
 
 const CWD = import.meta.dir;
 const CA_CERT_PATH = getCertPath("ca.crt");
@@ -35,7 +34,7 @@ test("HTTPS freebies.local responds correctly", () => {
   const result = spawnCurl({
     hostname: "freebies.local",
     port: 8181,
-    protocol: "http", // original test used HTTP not HTTPS
+    protocol: "http",
     followRedirect: true,
     verbose: true
   });
@@ -48,7 +47,7 @@ test("HTTPS test.local responds correctly", () => {
   const result = spawnCurl({
     hostname: "test.local",
     port: 8181,
-    protocol: "http", // original test used HTTP not HTTPS
+    protocol: "http",
     followRedirect: true,
     verbose: true
   });

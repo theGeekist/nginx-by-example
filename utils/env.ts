@@ -121,6 +121,7 @@ export function spawnCurl(opts: CurlOptions) {
   if (discardBody) cmd.push("-o", "/dev/null");
   if (onlyStatus) cmd.push("-w", "%{http_code}");
   cmd.push("--cacert", getCertPath("ca.crt"));
+  
   for(const c of extraCommands) {
     cmd.push(c);
   }

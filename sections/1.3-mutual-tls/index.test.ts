@@ -1,7 +1,6 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
 import { join } from "path";
 import { copyFile, reloadNginx, unlink, getSitesEnabledPath, getCertPath, getConfDPath, spawnCurl } from "@utils/env";
-import { spawnSync } from "bun";
 
 const CWD = import.meta.dir;
 const CA_CERT_PATH = getCertPath("ca.crt");

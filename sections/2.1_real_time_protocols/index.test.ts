@@ -2,17 +2,10 @@ import { test, expect, beforeAll, afterAll } from "bun:test";
 import { WebSocket } from "ws";
 import { setTimeout } from "timers/promises";
 
-
 import { startWs, stopWs } from "@sections/2.1_real_time_protocols/ws";
 import { startSSE, stopSSE } from "@sections/2.1_real_time_protocols/sse";
 import { startPoll, stopPoll } from "@sections/2.1_real_time_protocols/poll";
-import {
-  reloadNginx,
-  curlApi,
-  setupTestConfig,
-  teardownTestConfig,
-  spawnCurl,
-} from "@utils/env";
+import { reloadNginx, setupTestConfig, teardownTestConfig, spawnCurl } from "@utils/env";
 
 beforeAll(async () => {
   startWs();     // Starts mock WebSocket server

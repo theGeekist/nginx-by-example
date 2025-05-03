@@ -1,8 +1,5 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
-import {
-  curlApi, getCertPath, reloadNginx, setupTestConfig, spawnCurl, teardownTestConfig
-} from "@utils/env";
-import { spawnSync } from "bun";
+import { reloadNginx, setupTestConfig, spawnCurl, teardownTestConfig } from "@utils/env";
 
 beforeAll(() => {
   setupTestConfig(import.meta.dir);

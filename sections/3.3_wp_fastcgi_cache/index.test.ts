@@ -1,7 +1,5 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
-import {
-  curlApi, reloadNginx, setupTestConfig, spawnCurl, teardownTestConfig
-} from "@utils/env";
+import { reloadNginx, setupTestConfig, spawnCurl, teardownTestConfig } from "@utils/env";
 
 let testUrl: string;
 
