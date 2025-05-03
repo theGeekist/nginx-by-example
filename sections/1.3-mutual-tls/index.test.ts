@@ -35,7 +35,7 @@ test("mTLS fails without client cert", () => {
   });
 
   const statusCode = result.stdout.toString().trim();
-  expect(statusCode).toBe("400"); // ← This is the actual nginx response
+  expect(statusCode).toBe("400");
 });
 
 test("mTLS succeeds with client cert", () => {
