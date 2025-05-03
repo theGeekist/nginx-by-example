@@ -81,7 +81,6 @@ interface CurlOptions {
   path?: string;             // Path after domain, default "/"
   port?: number;             // Port number, default 8443
   protocol?: "http" | "https"; // Default "https"
-  resolve?: boolean;         // Inject --resolve for GitHub/CI contexts
   verbose?: boolean;         // -v
   followRedirect?: boolean;  // -L
   headers?: string[];        // Custom headers
@@ -110,7 +109,10 @@ export function spawnCurl(opts: CurlOptions) {
   const url = `${protocol}://${hostname}:${port}${path}`;
 
   const cmd = ["curl"];
-  cmd.push("--resolve", `${hostname}:${port}:127.0.0.1`);
+  cmd.push("--resolve", `test.localhost:8181:127.0.0.1`);
+  cmd.push("--resolve", `test.localhost:8443:127.0.0.1`);
+  cmd.push("--resolve", `freebies.localhost:8181:127.0.0.1`);
+  cmd.push("--resolve", `freebies.localhost:8443:127.0.0.1`);
 
   if (verbose) cmd.push("-v");
   if (followRedirect) cmd.push("-L");
