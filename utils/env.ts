@@ -1,4 +1,4 @@
-import { mkdirSync, existsSync, readdirSync, copyFileSync, unlinkSync, symlinkSync } from "fs";
+import { mkdirSync, existsSync, readdirSync, copyFileSync, unlinkSync } from "fs";
 import { join } from "path";
 import { execSync } from "child_process";
 import { spawnSync } from "bun";
