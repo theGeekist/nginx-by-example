@@ -60,6 +60,6 @@ test("Serves original when no Accept header", () => {
 });
 
 afterAll(() => {
-  // teardownTestConfig();
+  teardownTestConfig();
   reloadNginx();
 });

@@ -12,16 +12,23 @@ beforeAll(() => {
 });
 
 test("First request should MISS the cache", () => {
-  const res = curlApi(testUrl, ["-s", "-D", "-", "-o", "/dev/null"]);
+  let res = "";
+  for (let i = 0; i < 5; i++) {
+    res = curlApi(testUrl, ["-s", "-D", "-", "-o", "/dev/null"]);
+    if (!res.includes("404 Not Found")) break;
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250); // sleep 250ms
+  }
   expect(res).toMatch(/X-Cache: (MISS|BYPASS)/);
 });
 
 test("Second request should HIT the cache", () => {
-  // warm it up
-  curlApi("/", ["-s", "-o", "/dev/null"]);
-
-  const res = curlApi(testUrl, ["-s", "-D", "-", "-o", "/dev/null"]);
-  expect(res).toMatch(/X-Cache: HIT/);
+  let res2 = "";
+  for (let i = 0; i < 5; i++) {
+    res2 = curlApi(testUrl, ["-s", "-D", "-", "-o", "/dev/null"]);
+    if (!res2.includes("404 Not Found")) break;
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250);
+  }
+  expect(res2).toMatch(/X-Cache: HIT/);
 });
 
 afterAll(() => {

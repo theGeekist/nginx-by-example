@@ -12,7 +12,8 @@ services:
       - ./docker/ocsp:/etc/nginx/ocsp
       - ./docker/srv:/etc/nginx/srv
       - ./docker/cache:/var/cache/nginx
-      - nginx_cache:/var/cache/nginx
+    extra_hosts:
+      - "host.docker.internal:host-gateway"        
     restart: unless-stopped
     depends_on:
       - wordpress
