@@ -112,6 +112,8 @@ export function spawnCurl(opts: CurlOptions) {
   cmd.push("--resolve", `test.local:8443:127.0.0.1`);
   cmd.push("--resolve", `freebies.local:8181:127.0.0.1`);
   cmd.push("--resolve", `freebies.local:8443:127.0.0.1`);
+  cmd.push("--max-time", "10");
+  cmd.push("--connect-timeout", "10");
 
   if (verbose) cmd.push("-v");
   if (followRedirect) cmd.push("-L");
