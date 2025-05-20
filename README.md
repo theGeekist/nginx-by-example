@@ -91,6 +91,8 @@ This test harness is the official companion to
 
 Each section here maps to a chapter in the book tested and reproducible.
 
+Proudly brought to you by [@theGeekist](https://github.com/theGeekist)
+
 Made with ☕, `Bun`, and the occasional `facepalm`.
 
 > All TLS certificates and private keys in this repository are self-signed,
