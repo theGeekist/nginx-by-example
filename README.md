@@ -5,8 +5,14 @@
 <h1 align="center">NGINX by Example Vol 1 - Verified Configs & Tests</h1>
 
 <p align="center">
-  <a href="https://geekmaster3.gumroad.com/l/nginx-by-example">
-    📘 <strong>Buy the Book</strong>
+  <a href="https://geekmaster3.gumroad.com/l/nginx-by-example?utm_source=geekist&utm_medium=link&utm_campaign=nginx_gumroad" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Support%20on%20Gumroad-36a9ae?style=for-the-badge&logo=gumroad&logoColor=white" alt="Buy on Gumroad" />
+  </a>
+  <a href="https://www.amazon.com/dp/B0F844D63G?utm_source=geekist&utm_medium=link&utm_campaign=nginx_kindle" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Buy%20on%20Amazon-ff9900?style=for-the-badge&logo=amazon&logoColor=white" alt="Buy on Amazon" />
+  </a>
+  <a href="https://leanpub.com/nginxbyexample?utm_source=geekist&utm_medium=link&utm_campaign=nginx_leanpub" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Back%20it%20on%20LeanPub-ffd966?style=for-the-badge&logo=leanpub&logoColor=black" alt="Buy on Leanpub" />
   </a>
 </p>
 
@@ -97,3 +103,11 @@ Made with ☕, `Bun`, and the occasional `facepalm`.
 
 > All TLS certificates and private keys in this repository are self-signed,
 non-production and used exclusively for local and CI testing.
+<br>
+<br>
+<p align="center">
+  <sub>
+    Proudly brought to you by 
+    <a href="https://github.com/theGeekist" target="_blank">@theGeekist</a> and <a href="https://github.com/jasonnathan" target="_blank">@jasonnathan</a>
+  </sub>
+</p>
