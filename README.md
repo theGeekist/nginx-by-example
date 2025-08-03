@@ -2,7 +2,7 @@
   <img src="https://img.geekist.co/wp-content/uploads/1746074660-800x613.png" alt="NGINX by Example Vol 1 Cover" width="200" />
 </p>
 
-<h1 align="center">NGINX by Example Vol 1 - Verified Configs & Tests</h1>
+<h1 align="center">NGINX by Example Vol 1 - Configs & Tests</h1>
 
 <p align="center">
   <a href="https://geekmaster3.gumroad.com/l/nginx-by-example?utm_source=geekist&utm_medium=link&utm_campaign=nginx_gumroad" target="_blank" rel="noopener noreferrer">
