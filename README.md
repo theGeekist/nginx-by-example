@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://geekist.co/wp-content/uploads/PaperBack.png" alt="NGINX by Example Vol 1 Cover" width="200" />
+  <img src="https://img.geekist.co/wp-content/uploads/1746074660-800x613.png" alt="NGINX by Example Vol 1 Cover" width="200" />
 </p>
 
 <h1 align="center">NGINX by Example Vol 1 - Verified Configs & Tests</h1>
